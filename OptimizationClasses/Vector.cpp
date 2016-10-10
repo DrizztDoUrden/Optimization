@@ -11,10 +11,11 @@ namespace Optimization
 		{
 		}
 
-		Vector::Vector(vector<double>& coordinates, size_t size)
-			: _coordinates(coordinates)
+		Vector::Vector(const double* coordinates, size_t size)
+			: _coordinates(size)
 		{
-			_coordinates.resize(size);
+			for (size_t i = 0; i < size; i++)
+				_coordinates[i] = coordinates[i];
 		}
 
 		Vector::Vector(size_t size)

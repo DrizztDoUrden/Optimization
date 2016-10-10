@@ -1,10 +1,5 @@
 ﻿#pragma once
 #include "Function.h"
-#include "Vector.h"
-
-
-
-using namespace Optimization::OptimizationClasses;
 
 
 
@@ -19,7 +14,7 @@ namespace Optimization
 		public:
 			explicit GetVariable(size_t id);
 
-			double Calculate(const Vector&) const override sealed;
+			double Calculate(const double* x) const override sealed;
 			string ToString() const override sealed;
 			size_t CountVariables() const override sealed;
 		};

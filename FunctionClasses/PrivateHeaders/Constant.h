@@ -13,7 +13,7 @@ namespace Optimization
 
 		public:
 			explicit Constant(double value);
-			double Calculate(const Vector& x) const override sealed;
+			double Calculate(const double* x) const override sealed;
 			string ToString() const override sealed;
 			size_t CountVariables() const override sealed;
 		};

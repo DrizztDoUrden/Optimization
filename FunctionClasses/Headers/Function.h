@@ -1,9 +1,9 @@
 ﻿#pragma once
-#include "Vector.h"
+#include <string>
 
 
 
-using namespace Optimization::OptimizationClasses;
+using namespace std;
 
 
 
@@ -17,11 +17,11 @@ namespace Optimization
 			Function();
 			virtual ~Function();
 
-			virtual double Calculate(const Vector& x) const abstract;
+			virtual double Calculate(const double* x) const abstract;
 			virtual string ToString() const abstract;
 			virtual size_t CountVariables() const abstract;
 
-			double operator()(const Vector& x) const;
+			__inline double operator()(const double* x) const { return Calculate(x); }
 		};
 	}
 }

@@ -4,9 +4,10 @@
 #include <iostream>
 #include <string>
 #include "Parser.h"
+#include "Vector.h"
 
 
-
+using namespace Optimization::OptimizationClasses;
 using namespace Optimization::FunctionClasses;
 
 
@@ -50,7 +51,7 @@ const unsigned int OpsLimit = 1000;
 
 
 
-double TestFunction(const Vector& x)
+double TestFunction(const double* x)
 {
 	auto x1 = x[0];
 	auto x2 = x[1];
@@ -76,23 +77,24 @@ int main()
 	string input("(x2 - x1^2)^2 + 100*(1 - x1^2)^2");
 	Parser p(input);
 
+	double x[2];
 	auto f = p.Parse();
+	auto valid = true;
+
+	const auto testStart = -5.;
+	const auto testEnd = 5.;
+	const auto stepPart = .01;
+	const auto step = (testEnd - testStart) * stepPart;
+	const auto eps = pow(10, -10);
 
 	cout << "Input:" << input << endl;
 	cout << "Output: " << f->ToString() << endl;
 	cout << "Variables: " << f->CountVariables() << endl;
 
-	for (double x0 = -5; x0 < 5; x0 += .01)
-		for (double x1 = -5; x1 < 5; x1 += .01)
-		{
-			Vector x(2);
-
-			x[0] = x0;
-			x[1] = x1;
-
-			if (abs((*f)(x) - TestFunction(x)) > pow(10, -10))
-				cout << "Error at: " << x.ToString(0) << " - \t" << (*f)(x) << " != " << TestFunction(x) << endl;
-		}
+	for (x[0] = testStart; valid && x[0] < testEnd; x[0] += step)
+		for (x[1] = testStart; valid && x[1] < testEnd; x[1] += step)
+			if ((valid = abs((*f)(x) - TestFunction(x)) > eps))
+				cout << "Error at: " << Vector(x, 2).ToString(0) << " - \t" << (*f)(x) << " != " << TestFunction(x) << endl;
 
 	cout << "All tests valid on (-5 - 5;-5 - 5)." << endl;
 

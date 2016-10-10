@@ -20,7 +20,7 @@ namespace Optimization
 			UnaryOperation(Function *left, UnaryOperator op, string opStr);
 			~UnaryOperation();
 
-			double Calculate(const Vector& x) const override sealed;
+			double Calculate(const double* x) const override sealed;
 			string ToString() const override sealed;
 			size_t CountVariables() const override sealed;
 		};

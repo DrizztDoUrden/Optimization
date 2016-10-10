@@ -15,7 +15,7 @@ namespace Optimization
 
 		public:
 			Vector(vector<double>&);
-			Vector(vector<double>& coordinates, size_t size);
+			Vector(const double* coordinates, size_t size);
 			explicit Vector(size_t size);
 			Vector(const Vector&);
 			~Vector();
@@ -26,6 +26,8 @@ namespace Optimization
 			__inline size_t Size() const { return _coordinates.size(); }
 			__inline explicit operator double*() { return _coordinates.data(); }
 			__inline explicit operator const double*() const { return _coordinates.data(); }
+			__inline explicit operator vector<double>&() { return _coordinates; }
+			__inline explicit operator vector<double>() const { return _coordinates; }
 			__inline double& operator[](size_t index) { return _coordinates[index]; }
 			__inline double operator[](size_t index) const { return _coordinates[index]; }
 

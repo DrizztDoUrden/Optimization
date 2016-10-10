@@ -20,7 +20,7 @@ namespace Optimization
 			BinaryOperation(Function *left, Function *right, BinaryOperator op, string opStr);
 			~BinaryOperation();
 
-			double Calculate(const Vector& x) const override sealed;
+			double Calculate(const double* x) const override sealed;
 			string ToString() const override sealed;
 			size_t CountVariables() const override sealed;
 		};

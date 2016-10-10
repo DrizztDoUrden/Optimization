@@ -19,7 +19,7 @@ namespace Optimization
 			delete _left;
 		}
 
-		double UnaryOperation::Calculate(const Vector& x) const
+		double UnaryOperation::Calculate(const double* x) const
 		{
 			return _operation(_left->Calculate(x));
 		}

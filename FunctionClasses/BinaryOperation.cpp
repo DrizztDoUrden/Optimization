@@ -22,7 +22,7 @@ namespace Optimization
 			delete _right;
 		}
 
-		double BinaryOperation::Calculate(const Vector& x) const
+		double BinaryOperation::Calculate(const double* x) const
 		{
 			return _operation(_left->Calculate(x), _right->Calculate(x));
 		}

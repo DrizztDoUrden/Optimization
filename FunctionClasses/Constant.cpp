@@ -13,7 +13,7 @@ namespace Optimization
 		}
 
 
-		double Constant::Calculate(const Vector& x) const
+		double Constant::Calculate(const double* x) const
 		{
 			return _value;
 		}

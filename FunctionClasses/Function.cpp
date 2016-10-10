@@ -13,10 +13,5 @@ namespace Optimization
 		Function::~Function()
 		{
 		}
-
-		double Function::operator()(const Vector& x) const
-		{
-			return Calculate(x);
-		}
 	}
 }

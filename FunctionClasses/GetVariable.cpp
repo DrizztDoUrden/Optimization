@@ -11,7 +11,7 @@ namespace Optimization
 		{
 		}
 
-		double GetVariable::Calculate(const Vector& x) const
+		double GetVariable::Calculate(const double* x) const
 		{
 			return x[_id];
 		}
