@@ -74,18 +74,18 @@ int main()
 		}
 	}*/
 
-	string input("(x2 - x1^2)^2 + 100*(1 - x1^2)^2");
-	Parser p(input);
-
-	double x[2];
-	auto f = p.Parse();
-	auto valid = true;
-
+	const string input("(x2 - x1^2)^2 + 100*(1 - x1^2)^2");
 	const auto testStart = -5.;
 	const auto testEnd = 5.;
 	const auto stepPart = .01;
 	const auto step = (testEnd - testStart) * stepPart;
 	const auto eps = pow(10, -10);
+
+	Parser p(input);
+
+	double x[2];
+	auto f = p.Parse();
+	auto valid = true;
 
 	cout << "Input:" << input << endl;
 	cout << "Output: " << f->ToString() << endl;
@@ -93,10 +93,10 @@ int main()
 
 	for (x[0] = testStart; valid && x[0] < testEnd; x[0] += step)
 		for (x[1] = testStart; valid && x[1] < testEnd; x[1] += step)
-			if ((valid = abs((*f)(x) - TestFunction(x)) > eps))
+			if ((valid = (abs((*f)(x) - TestFunction(x)) > eps)))
 				cout << "Error at: " << Vector(x, 2).ToString(0) << " - \t" << (*f)(x) << " != " << TestFunction(x) << endl;
 
-	cout << "All tests valid on (" << testStart << " .. " << testEnd << ";" << testStart << " .. " << testEnd << ")." << endl;
+	cout << "All tests valid on (" << testStart << ".." << testEnd << ";" << testStart << ".." << testEnd << ")." << endl;
 
 	delete f;
 
