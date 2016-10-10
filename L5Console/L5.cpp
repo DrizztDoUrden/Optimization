@@ -96,7 +96,7 @@ int main()
 			if ((valid = abs((*f)(x) - TestFunction(x)) > eps))
 				cout << "Error at: " << Vector(x, 2).ToString(0) << " - \t" << (*f)(x) << " != " << TestFunction(x) << endl;
 
-	cout << "All tests valid on (-5 - 5;-5 - 5)." << endl;
+	cout << "All tests valid on (" << testStart << " .. " << testEnd << ";" << testStart << " .. " << testEnd << ")." << endl;
 
 	delete f;
 
