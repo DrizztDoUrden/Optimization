@@ -26,7 +26,7 @@ namespace Optimization
 
 		string UnaryOperation::ToString() const
 		{
-			return string("(").append(_opStr).append(_left->ToString()).append(")");
+			return string(_opStr).append(_left->ToString());
 		}
 
 		size_t UnaryOperation::CountVariables() const

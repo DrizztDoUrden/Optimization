@@ -56,10 +56,22 @@ double TestFunction(const double* x)
 	auto x1 = x[0];
 	auto x2 = x[1];
 
-	return pow(x2 - pow(x1, 2), 2) + 100 * pow(1 - pow(x1, 2), 2);
+	return -pow(x2 - pow(x1, 2), 2) + 100 * pow(1 - pow(x1, 2), 2);
 }
 
-int main()
+void Build(string input)
+{
+	Parser p(input);
+	auto f = p.Parse();
+
+	cout << "Input:" << input << endl;
+	cout << "Output: " << f->ToString() << endl;
+	cout << "Variables: " << f->CountVariables() << endl;
+
+	delete f;
+}
+
+int main(int argsc, char** args)
 {
 	/*auto partanByPauel = PrepareParallelTangents(Pauel);
 
@@ -74,7 +86,16 @@ int main()
 		}
 	}*/
 
-	const string input("(x2 - x1^2)^2 + 100*(1 - x1^2)^2");
+	if (argsc > 1)
+	{
+		string arg1(args[1]);
+
+		if (arg1 == "-build")
+
+		return 0;
+	}
+
+	string input("-(x2 - x1^2)^2 + 100*(1 - x1^2)^2");
 	const auto testStart = -5.;
 	const auto testEnd = 5.;
 	const auto stepPart = .01;

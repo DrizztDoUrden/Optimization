@@ -20,8 +20,10 @@ namespace Optimization
 		double Cos(double x) { return cos(x); };
 		double Log(double x) { return log(x); };
 		double Exp(double x) { return exp(x); };
+		double Neg(double x) { return -x; };
 
 		Function* ParseOperation(Lexer& lexer, vector<Token*> &stack);
+		Function* ParseOperandOrPower(Lexer& lexer, vector<Token*> &stack);
 
 		void CheckForUnexpectedEnd(Lexer& lexer)
 		{
@@ -90,10 +92,10 @@ namespace Optimization
 
 				switch (type)
 				{
-				case Operators::Sin: return new UnaryOperation(ParseOperand(lexer, stack), Sin, "sin");
-				case Operators::Cos: return new UnaryOperation(ParseOperand(lexer, stack), Cos, "cos");
-				case Operators::Log: return new UnaryOperation(ParseOperand(lexer, stack), Log, "log");
-				case Operators::Exp: return new UnaryOperation(ParseOperand(lexer, stack), Exp, "exp");
+				case Operators::Sin: return new UnaryOperation(ParseOperand(lexer, stack), Sin, "sin ");
+				case Operators::Cos: return new UnaryOperation(ParseOperand(lexer, stack), Cos, "cos ");
+				case Operators::Log: return new UnaryOperation(ParseOperand(lexer, stack), Log, "log ");
+				case Operators::Exp: return new UnaryOperation(ParseOperand(lexer, stack), Exp, "exp ");
 				default: throw exception("Unknown operator.");
 				}
 			}
@@ -105,6 +107,11 @@ namespace Optimization
 					throw exception("Expected ).");
 
 				return t;
+			}
+			case '-': {
+				delete Pop(lexer, stack);
+				auto t = ParseOperandOrPower(lexer, stack);
+				return new UnaryOperation(t, Neg, "-");
 			}
 			default: throw exception("Unknown token.");
 			}
@@ -144,6 +151,18 @@ namespace Optimization
 			}
 
 			return new BinaryOperation(left, rOp, leftOp, leftOpStr);
+		}
+
+		Function* ParseOperandOrPower(Lexer& lexer, vector<Token*> &stack)
+		{
+			auto op = ParseOperand(lexer, stack);
+			auto oper = Peek(lexer, stack);
+
+			if (oper->GetId() != '^')
+				return op;
+
+			delete Pop(lexer, stack);
+			return ParseRightOperand(lexer, stack, op, 30, Pow, "^");
 		}
 
 		Function* ParseOperation(Lexer& lexer, vector<Token*> &stack)
