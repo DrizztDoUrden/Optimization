@@ -1,5 +1,6 @@
 ﻿#include "BinaryOperation.h"
 #include <algorithm>
+#include <sstream>
 
 
 
@@ -29,7 +30,11 @@ namespace Optimization
 
 		string BinaryOperation::ToString() const
 		{
-			return string("(").append(_left->ToString()).append(_opStr).append(_right->ToString()).append(")");
+			stringstream ss;
+
+			ss << "(" << _left->ToString() << _opStr << _right->ToString() << ")";
+
+			return ss.str();
 		}
 
 		size_t BinaryOperation::CountVariables() const

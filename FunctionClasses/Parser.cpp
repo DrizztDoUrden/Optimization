@@ -1,4 +1,5 @@
 ﻿#include "Parser.h"
+#include <sstream>
 #include "Constant.h"
 #include "UnaryOperation.h"
 #include "BinaryOperation.h"
@@ -86,17 +87,34 @@ namespace Optimization
 			}
 			case static_cast<int>(TokenIds::Operator) : {
 				auto type = static_cast<Operator*>(start)->GetValue();
-				delete Pop(lexer, stack);
-
-				CheckForUnexpectedEnd(lexer);
 
 				switch (type)
 				{
-				case Operators::Sin: return new UnaryOperation(ParseOperand(lexer, stack), Sin, "sin ");
-				case Operators::Cos: return new UnaryOperation(ParseOperand(lexer, stack), Cos, "cos ");
-				case Operators::Log: return new UnaryOperation(ParseOperand(lexer, stack), Log, "log ");
-				case Operators::Exp: return new UnaryOperation(ParseOperand(lexer, stack), Exp, "exp ");
-				default: throw exception("Unknown operator.");
+				case Operators::Sin: {
+					delete Pop(lexer, stack);
+					CheckForUnexpectedEnd(lexer);
+					return new UnaryOperation(ParseOperand(lexer, stack), Sin, "sin ");
+				}
+				case Operators::Cos: {
+					delete Pop(lexer, stack);
+					CheckForUnexpectedEnd(lexer);
+					return new UnaryOperation(ParseOperand(lexer, stack), Cos, "cos ");
+				}
+				case Operators::Log: {
+					delete Pop(lexer, stack);
+					CheckForUnexpectedEnd(lexer);
+					return new UnaryOperation(ParseOperand(lexer, stack), Log, "log ");
+				}
+				case Operators::Exp: {
+					delete Pop(lexer, stack);
+					CheckForUnexpectedEnd(lexer);
+					return new UnaryOperation(ParseOperand(lexer, stack), Exp, "exp ");
+				}
+				default: {
+					stringstream ss;
+					ss << "Unknown operator at " << start->GetPosition() << ".";
+					throw exception(ss.str().c_str());
+				}
 				}
 			}
 			case '(': {
@@ -104,7 +122,11 @@ namespace Optimization
 				auto t = ParseOperation(lexer, stack);
 
 				if (lexer.Finished() || !Match(lexer, stack, ')'))
-					throw exception("Expected ).");
+				{
+					stringstream ss;
+					ss << "Expected ) at " << lexer.GetPosition() << ".";
+					throw exception(ss.str().c_str());
+				}
 
 				return t;
 			}
@@ -113,7 +135,11 @@ namespace Optimization
 				auto t = ParseOperandOrPower(lexer, stack);
 				return new UnaryOperation(t, Neg, "-");
 			}
-			default: throw exception("Unknown token.");
+			default: {
+				stringstream ss;
+				ss << "Unknown token at " << start->GetPosition() << ".";
+				throw exception(ss.str().c_str());
+			}
 			}
 		}
 
@@ -219,7 +245,11 @@ namespace Optimization
 			auto t = ParseOperation(lexer, stack);
 
 			if (!lexer.Finished())
-				throw exception("Unexpected token.");
+			{
+				stringstream ss;
+				ss << "Unexpected token at " << lexer.GetPosition() << ".";
+				throw exception(ss.str().c_str());
+			}
 
 			return t;
 		}

@@ -1,5 +1,7 @@
 ﻿#include "GetVariable.h"
 #include <string>
+#include <sstream>
+
 
 
 namespace Optimization
@@ -18,7 +20,11 @@ namespace Optimization
 
 		string GetVariable::ToString() const
 		{
-			return string("x").append(to_string(_id + 1));
+			stringstream ss;
+
+			ss << "x" << _id + 1;
+
+			return ss.str();
 		}
 
 		size_t GetVariable::CountVariables() const

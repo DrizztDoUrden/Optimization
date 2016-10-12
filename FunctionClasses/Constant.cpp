@@ -1,5 +1,7 @@
 ﻿#include "Constant.h"
 #include <string>
+#include <sstream>
+
 
 
 namespace Optimization
@@ -20,9 +22,11 @@ namespace Optimization
 
 		string Constant::ToString() const
 		{
-			char temp[32];
-			sprintf_s(temp, "%.0f", _value);
-			return temp;
+			stringstream ss;
+			
+			ss << _value;
+
+			return ss.str();
 		}
 
 		size_t Constant::CountVariables() const

@@ -1,4 +1,5 @@
 ﻿#include "UnaryOperation.h"
+#include <sstream>
 
 
 
@@ -26,7 +27,11 @@ namespace Optimization
 
 		string UnaryOperation::ToString() const
 		{
-			return string(_opStr).append(_left->ToString());
+			stringstream ss;
+
+			ss << _left->ToString() << _opStr;
+
+			return ss.str();
 		}
 
 		size_t UnaryOperation::CountVariables() const

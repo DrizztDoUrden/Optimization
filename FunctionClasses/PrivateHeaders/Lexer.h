@@ -33,8 +33,9 @@ namespace Optimization
 		public:
 			explicit Lexer(string input);
 
-			bool Finished();
+			__inline size_t GetPosition() const { return _position; }
 
+			bool Finished();
 			Token* Scan();
 		};
 	}

@@ -1,11 +1,37 @@
 #include "Vector.h"
 #include <string>
+#include <sstream>
+
 
 
 namespace Optimization
 {
 	namespace OptimizationClasses
 	{
+		Vector::Vector()
+		{
+		}
+
+		Vector::Vector(const char* s)
+		{
+			while (true)
+			{
+				char* t;
+				auto d = strtod(s, &t);
+
+				if (s != t)
+					_coordinates.push_back(d);
+
+				if (*t == '\0')
+					break;
+
+				if (*t != ';')
+					throw exception("Wrong vector");
+
+				s = t + 1;
+			}
+		}
+
 		Vector::Vector(vector<double>& coordinates)
 			: _coordinates(coordinates)
 		{
@@ -100,35 +126,21 @@ namespace Optimization
 
 		string Vector::ToString() const
 		{
-			string result("(");
+			stringstream ss;
+
+			ss << "(";
 
 			for (size_t i = 0; i < _coordinates.size(); i++)
 			{
 				if (i > 0)
-					result = result.append(";");
+					ss << ";";
 
-				result = result.append(to_string(_coordinates[i]));
+				ss << _coordinates[i];
 			}
 
-			return result.append(")");
-		}
+			ss << ")";
 
-		string Vector::ToString(size_t digitsAfterZero) const
-		{
-			string result("(");
-			auto format = string("%.").append(to_string(digitsAfterZero)).append("f");
-
-			for (size_t i = 0; i < _coordinates.size(); i++)
-			{
-				if (i > 0)
-					result = result.append(";");
-
-				char buffer[32];
-				sprintf_s(buffer, format.c_str(), _coordinates[i]);
-				result = result.append(buffer);
-			}
-
-			return result.append(")");
+			return ss.str();
 		}
 	}
 }
