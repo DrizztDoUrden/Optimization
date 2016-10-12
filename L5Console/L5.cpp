@@ -50,8 +50,10 @@ void ShowHelp()
 	cout << "L5 [-f[unction]] <function> [<actions>] - parse function and do actions if any." << endl;
 	cout << endl;
 	cout << "Actions:" << endl;
-	cout << "-p[oint] <point>" << endl;
-	cout << "-m[in[imize]] -s[tart] <point> -e[ps] <eps> [-c[heck] <minimum check point>] - find function minimum." << endl;
+	cout << "-mc <point> - preset check for minimum." << endl;
+	cout << "-me <number> - preset epsilon for minimum." << endl;
+	cout << "-p[oint] <point> - find function value at point." << endl;
+	cout << "-m[in[imize]] [-s[tart]] <point> - find function minimum." << endl;
 	cout << endl;
 	cout << "Points should be in format x1;x2;x3... where x1..xn - numbers." << endl;
 }
@@ -101,7 +103,7 @@ void Minimize(MinimizationMethod method, const string& methodName, Function* fun
 		auto f = [function, &calls](const double* x) { calls++; return (*function)(x); };
 		auto result = method(f, start, eps, start.Size(), OpsLimit, ops);
 
-		cout << methodName << ": " << Vector(result).ToString() << " - " << (*function)(result.data()) << " in " << ops << " ops with " << calls << " func calls.";
+		cout << methodName << ": " << Vector(result).ToString() << "\t - " << (*function)(result.data()) << "\tin " << ops << "\tops with " << calls << "\tfunc calls.";
 
 		if (check != nullptr)
 		{
@@ -117,91 +119,36 @@ void Minimize(MinimizationMethod method, const string& methodName, Function* fun
 	cout << endl;
 }
 
-void Minimize(size_t argsc, char** args, size_t offset, Function* function)
+void Minimize(size_t argsc, char** args, size_t offset, Function* function, Vector* check = nullptr, double eps = -1)
 {
 	Vector* start = nullptr;
-	Vector* check = nullptr;
-	auto eps = -1.;
+	string arg(args[offset++]);
 
-	while (argsc > offset && (start == nullptr || eps == -1. || check == nullptr))
+	if (arg == "-s" || arg == "-start")
 	{
-		string arg = args[offset++];
+		if (offset == argsc)
+		{
+			cout << "Wrong usage: start point expected." << endl;
+			return;
+		}
 
+		arg = args[offset++];
 		ToLower(arg);
-
-		if (arg == "-s" || arg == "-start")
-		{
-			if (start != nullptr)
-			{
-				cout << "Start point has already been specified." << endl;
-				if (check != nullptr) delete check;
-				return;
-			}
-
-			arg = args[offset++];
-
-			try
-			{
-				start = new Vector(arg.c_str());
-			}
-			catch (const exception& e)
-			{
-				cout << "Error while parsing start point: " << e.what() << endl;
-				return;
-			}
-		}
-		else if (arg == "-c" || arg == "-check")
-		{
-			if (check != nullptr)
-			{
-				cout << "Check point has already been specified." << endl;
-				if (start != nullptr) delete start;
-				return;
-			}
-
-			arg = args[offset++];
-
-			try
-			{
-				check = new Vector(arg.c_str());
-			}
-			catch (const exception& e)
-			{
-				cout << "Error while parsing check point: " << e.what() << endl;
-				return;
-			}
-		}
-		else if (arg == "-e" || arg == "-eps")
-		{
-			if (eps != -1)
-			{
-				cout << "Precision has already been specified." << endl;
-				if (start != nullptr) delete start;
-				if (check != nullptr) delete check;
-				return;
-			}
-
-			char* t;
-
-			arg = args[offset++];
-			eps = strtod(arg.c_str(), &t);
-
-			if (t == arg.c_str())
-			{
-				cout << "Precision specified." << endl;
-
-				if (start != nullptr)
-					delete start;
-
-				return;
-			}
-		}
-		else break;
 	}
 
-	if (start == nullptr)
+	try
 	{
-		cout << "Start point must be specified." << endl;
+		start = new Vector(arg.c_str());
+	}
+	catch (const exception& e)
+	{
+		cout << "Error while parsing start point: " << e.what() << endl;
+		return;
+	}
+
+	if (check == nullptr)
+	{
+		cout << "Check point must be specified." << endl;
 		return;
 	}
 
@@ -213,7 +160,6 @@ void Minimize(size_t argsc, char** args, size_t offset, Function* function)
 	}
 
 	Minimize(PrepareParallelTangents(Pauel), "Partan by Pauel", function, *start, eps, check);
-	if (check != nullptr) delete check;
 	delete start;
 }
 
@@ -265,6 +211,9 @@ int main(size_t argsc, char** args)
 			return 0;
 		}
 
+		Vector* minCheck = nullptr;
+		auto minEps = -1.;
+
 		while (offset < argsc)
 		{
 			arg = args[offset++];
@@ -272,9 +221,34 @@ int main(size_t argsc, char** args)
 			
 			if (arg == "-p" || arg == "-point")
 				Point(argsc, args, offset, f);
+			else if (arg == "-m" || arg == "-min" || arg == "-minimize")
+				Minimize(argsc, args, offset, f, minCheck, minEps);
+			else if (arg == "-mc")
+			{
+				try
+				{
+					arg = args[offset++];
+					minCheck = new Vector(arg.c_str());
+				}
+				catch (const exception& e)
+				{
+					cout << "Error while parsing check point: " << e.what() << endl;
+					return 0;
+				}
+			}
+			else if (arg == "-me")
+			{
+				char* t;
 
-			if (arg == "-m" || arg == "-min" || arg == "-minimize")
-				Minimize(argsc, args, offset, f);
+				arg = args[offset++];
+				minEps = strtod(arg.c_str(), &t);
+
+				if (t == arg.c_str())
+				{
+					cout << "Precision specified." << endl;
+					return 0;
+				}
+			}
 		}
 
 		delete f;
