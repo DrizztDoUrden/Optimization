@@ -119,7 +119,7 @@ void Minimize(MinimizationMethod method, const string& methodName, const Functio
 	cout << endl;
 }
 
-void Minimize(size_t argsc, const char** args, size_t offset, const Function<double>& function, const Vector* check = nullptr, double eps = -1)
+void Minimize(size_t argsc, const char** args, size_t offset, const ParsedFunction& function, const Vector* check = nullptr, double eps = -1)
 {
 	Vector* start = nullptr;
 	string arg(args[offset++]);
@@ -139,16 +139,20 @@ void Minimize(size_t argsc, const char** args, size_t offset, const Function<dou
 	try
 	{
 		start = new Vector(arg.c_str());
+
+		auto fVars = function.CountVariables();
+
+		if (start->Size() < fVars)
+		{
+			cout << "Point(" << arg << ") size(" << start->Size() << ") is less than function variables count(" << fVars << ")" << endl;
+
+			delete start;
+			return;
+		}
 	}
 	catch (const exception& e)
 	{
 		cout << "Error while parsing start point: " << e.what() << endl;
-		return;
-	}
-
-	if (check == nullptr)
-	{
-		cout << "Check point must be specified." << endl;
 		return;
 	}
 
@@ -159,7 +163,7 @@ void Minimize(size_t argsc, const char** args, size_t offset, const Function<dou
 		return;
 	}
 
-	Minimize(PrepareParallelTangents(Pauel), "Partan by Pauel", function, *start, eps, check);
+	Minimize(PrepareParallelTangents(Bolcano), "Partan by Bolcano", function, *start, eps, check);
 	delete start;
 }
 
@@ -225,15 +229,29 @@ int main(size_t argsc, const char** args)
 				Minimize(argsc, args, offset, *f, minCheck, minEps);
 			else if (arg == "-mc")
 			{
+				if (minCheck != nullptr)
+				{
+					cout << "Check point has already been specified. New value ignored." << endl;
+					continue;
+				}
+
 				try
 				{
 					arg = args[offset++];
-					minCheck = new Vector(arg.c_str());
+					auto tMinCheck = new Vector(arg.c_str());
+					auto fVars = f->CountVariables();
+
+					if (tMinCheck->Size() < fVars)
+					{
+						cout << "Point(" << arg << ") size(" << tMinCheck->Size() << ") is less than function variables count(" << fVars << ")" << endl;
+						delete tMinCheck;
+					}
+					else
+						minCheck = tMinCheck;
 				}
 				catch (const exception& e)
 				{
 					cout << "Error while parsing check point: " << e.what() << endl;
-					return 0;
 				}
 			}
 			else if (arg == "-me")
@@ -241,16 +259,16 @@ int main(size_t argsc, const char** args)
 				char* t;
 
 				arg = args[offset++];
-				minEps = strtod(arg.c_str(), &t);
+				auto tMinEps = strtod(arg.c_str(), &t);
 
 				if (t == arg.c_str())
-				{
-					cout << "Precision specified." << endl;
-					return 0;
-				}
+					cout << "Precision is not a valid number." << endl;
+				else
+					minEps = tMinEps;
 			}
 		}
 
+		if (minCheck != nullptr) delete minCheck;
 		delete f;
 		return 0;
 	}
