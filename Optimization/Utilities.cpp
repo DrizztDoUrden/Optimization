@@ -35,33 +35,41 @@ void ValidateResult(NonlinearFunction function, const double result[], const dou
 		cout << ">>Error<<\td/eps=" << delta / eps << ", cd/eps=" << cDelta / eps;
 }
 
-double Derivate(LinearFunction function, double eps, double point)
+double Derivate(LinearFunction function, double h, double point)
 {
-	return (function(point + eps) - function(point)) / eps;
+	return (function(point + 2 * h) + 8 * function(point + h) - 8 * function(point - h) - function(point - 2 * h)) / 12 / h;
 }
 
-LinearFunction DerivateFunction(LinearFunction function, double eps)
+LinearFunction DerivateFunction(LinearFunction function, double h)
 {
-	return [function, eps](double point) { return Derivate(function, eps, point); };
+	return [function, h](double point) { return Derivate(function, h, point); };
 }
 
-double PartialDerivate(NonlinearFunction function, double eps, const double point[], size_t coordinate, size_t size)
+double PartialDerivate(NonlinearFunction function, double h, const double point[], size_t coordinate, size_t size)
 {
 	auto epsPoint = static_cast<double*>(alloca(sizeof(double) * size));
 
 	for (size_t i = 0; i < size; i++)
 		epsPoint[i] = point[i];
 
-	epsPoint[coordinate] += eps;
+	epsPoint[coordinate] += 2 * h;
+	auto result = function(epsPoint);
 
-	auto result = (function(epsPoint) - function(point)) / eps;
+	epsPoint[coordinate] -= h;
+	result += 8*function(epsPoint);
 
-	return result;
+	epsPoint[coordinate] -= 2*h;
+	result -= 8*function(epsPoint);
+
+	epsPoint[coordinate] -= h;
+	result -= function(epsPoint);
+
+	return result / 12 / h;
 }
 
-function<double(const double [], size_t)> PartialDerivateFunction(NonlinearFunction function, double eps, size_t size)
+function<double(const double [], size_t)> PartialDerivateFunction(NonlinearFunction function, double h, size_t size)
 {
-	return [function, eps, size](const double point[], size_t coordinate) { return PartialDerivate(function, eps, point, coordinate, size); };
+	return [function, h, size](const double point[], size_t coordinate) { return PartialDerivate(function, h, point, coordinate, size); };
 }
 
 vector<double> Gradient(NonlinearFunction function, double eps, const double point[], size_t size)

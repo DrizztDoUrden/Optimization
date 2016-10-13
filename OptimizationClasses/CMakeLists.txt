@@ -5,5 +5,9 @@ FILE(GLOB SOURCE *.cpp)
 
 ADD_LIBRARY(OptimizationClasses STATIC ${SOURCE} ${HEADERS})
 
+ADD_DEPENDENCIES(OptimizationClasses FunctionClasses)
+
+TARGET_LINK_LIBRARIES(OptimizationClasses PUBLIC FunctionClasses)
+
 TARGET_INCLUDE_DIRECTORIES(OptimizationClasses PRIVATE /)
 TARGET_INCLUDE_DIRECTORIES(OptimizationClasses PUBLIC ${PUBLIC_HEADERS_DIR})

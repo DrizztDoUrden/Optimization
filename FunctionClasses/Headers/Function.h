@@ -11,17 +11,20 @@ namespace Optimization
 {
 	namespace FunctionClasses
 	{
-		class Function
+		template<typename TResult>
+		class Function abstract
 		{
 		public:
-			Function();
-			virtual ~Function();
+			Function()
+			{
+			}
 
-			virtual double Calculate(const double* x) const abstract;
-			virtual string ToString() const abstract;
-			virtual size_t CountVariables() const abstract;
+			virtual ~Function()
+			{
+			}
 
-			__inline double operator()(const double* x) const { return Calculate(x); }
+			virtual TResult Calculate(const double* x) const abstract;
+			__inline TResult operator()(const double* x) const { return Calculate(x); }
 		};
 	}
 }

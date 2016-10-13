@@ -8,7 +8,7 @@ namespace Optimization
 {
 	namespace FunctionClasses
 	{
-		BinaryOperation::BinaryOperation(Function *left, Function *right, BinaryOperator op, string opStr)
+		BinaryOperation::BinaryOperation(ParsedFunction *left, ParsedFunction *right, BinaryOperator op, string opStr)
 			: _left(left)
 			, _right(right)
 			, _operation(op)

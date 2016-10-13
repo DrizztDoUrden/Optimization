@@ -1,4 +1,5 @@
 #include "Methods.h"
+#include <algorithm>
 #include "Utilities.h"
 
 
@@ -200,7 +201,7 @@ double Bolcano(LinearFunction function, double start, double end, double eps, un
 
 	operations = 0;
 
-	while (abs(dMid) > eps && abs(end - start) > eps)
+	while (abs(dMid) > eps || abs(end - start) > eps)
 	{
 		if (dMid > 0)
 			end = mid;
@@ -245,7 +246,7 @@ double Davidon(LinearFunction function, double start, double end, double eps, un
 
 		if (operations++ > limit)
 			throw - 1;
-	} while (abs(dFunction((start + end) / 2)) > eps && abs(end - start) > eps && abs(dFunction(y)) > eps);
+	} while (abs(dFunction((start + end) / 2)) > eps || abs(end - start) > eps && abs(dFunction(y)) > eps);
 
 	return d;
 }

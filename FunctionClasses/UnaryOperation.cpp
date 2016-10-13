@@ -7,7 +7,7 @@ namespace Optimization
 {
 	namespace FunctionClasses
 	{
-		UnaryOperation::UnaryOperation(Function *left, UnaryOperator op, string opStr)
+		UnaryOperation::UnaryOperation(ParsedFunction *left, UnaryOperator op, string opStr)
 			: _left(left)
 			, _operation(op)
 			, _opStr(opStr)

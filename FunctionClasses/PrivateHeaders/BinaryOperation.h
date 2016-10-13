@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include <functional>
-#include "Function.h"
+#include "ParsedFunction.h"
 
 
 
@@ -10,14 +10,14 @@ namespace Optimization
 	{
 		using BinaryOperator = function<double(double, double)>;
 
-		class BinaryOperation : public Function
+		class BinaryOperation : public ParsedFunction
 		{
-			Function *_left, *_right;
+			ParsedFunction *_left, *_right;
 			BinaryOperator _operation;
 			string _opStr;
 
 		public:
-			BinaryOperation(Function *left, Function *right, BinaryOperator op, string opStr);
+			BinaryOperation(ParsedFunction *left, ParsedFunction *right, BinaryOperator op, string opStr);
 			~BinaryOperation();
 
 			double Calculate(const double* x) const override sealed;

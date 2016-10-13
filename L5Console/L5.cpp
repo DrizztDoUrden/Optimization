@@ -32,7 +32,7 @@ double TestFunction(const double* x)
 	return pow(x2 - pow(x1, 2), 2) + 100 * pow(1 - pow(x1, 2), 2);
 }
 
-Function* Build(const string& input)
+ParsedFunction* Build(const string& input)
 {
 	Parser p(input);
 	auto f = p.Parse();
@@ -58,7 +58,7 @@ void ShowHelp()
 	cout << "Points should be in format x1;x2;x3... where x1..xn - numbers." << endl;
 }
 
-void Point(size_t argsc, char** args, size_t offset, Function* f)
+void Point(size_t argsc, const char** args, size_t offset, const ParsedFunction& f)
 {
 	if (argsc == offset)
 	{
@@ -79,7 +79,7 @@ void Point(size_t argsc, char** args, size_t offset, Function* f)
 		return;
 	}
 
-	auto fVars = f->CountVariables();
+	auto fVars = f.CountVariables();
 
 	if (v->Size() < fVars)
 	{
@@ -89,21 +89,21 @@ void Point(size_t argsc, char** args, size_t offset, Function* f)
 		return;
 	}
 
-	cout << "Result at " << v->ToString() << " is " << (*f)(*v) << endl;
+	cout << "Result at " << v->ToString() << " is " << f(*v) << endl;
 	delete v;
 }
 
-void Minimize(MinimizationMethod method, const string& methodName, Function* function, const Vector& start, double eps, const Vector* check)
+void Minimize(MinimizationMethod method, const string& methodName, const Function<double>& function, const Vector& start, double eps, const Vector* check)
 {
 	auto ops = 0u;
 	auto calls = 0u;
 
 	try
 	{
-		auto f = [function, &calls](const double* x) { calls++; return (*function)(x); };
+		auto f = [&function, &calls](const double* x) { calls++; return function(x); };
 		auto result = method(f, start, eps, start.Size(), OpsLimit, ops);
 
-		cout << methodName << ": " << Vector(result).ToString() << "\t - " << (*function)(result.data()) << "\tin " << ops << "\tops with " << calls << "\tfunc calls.";
+		cout << methodName << ": " << Vector(result).ToString() << "\t - " << function(result.data()) << "\tin " << ops << "\tops with " << calls << "\tfunc calls.";
 
 		if (check != nullptr)
 		{
@@ -119,7 +119,7 @@ void Minimize(MinimizationMethod method, const string& methodName, Function* fun
 	cout << endl;
 }
 
-void Minimize(size_t argsc, char** args, size_t offset, Function* function, Vector* check = nullptr, double eps = -1)
+void Minimize(size_t argsc, const char** args, size_t offset, const Function<double>& function, const Vector* check = nullptr, double eps = -1)
 {
 	Vector* start = nullptr;
 	string arg(args[offset++]);
@@ -163,7 +163,7 @@ void Minimize(size_t argsc, char** args, size_t offset, Function* function, Vect
 	delete start;
 }
 
-int main(size_t argsc, char** args)
+int main(size_t argsc, const char** args)
 {
 	if (argsc > 1)
 	{
@@ -190,7 +190,7 @@ int main(size_t argsc, char** args)
 			ToLower(arg);
 		}
 
-		Function* f = nullptr;
+		ParsedFunction* f = nullptr;
 
 		cout << "Input: " << arg << endl;
 		
@@ -220,9 +220,9 @@ int main(size_t argsc, char** args)
 			ToLower(arg);
 			
 			if (arg == "-p" || arg == "-point")
-				Point(argsc, args, offset, f);
+				Point(argsc, args, offset, *f);
 			else if (arg == "-m" || arg == "-min" || arg == "-minimize")
-				Minimize(argsc, args, offset, f, minCheck, minEps);
+				Minimize(argsc, args, offset, *f, minCheck, minEps);
 			else if (arg == "-mc")
 			{
 				try

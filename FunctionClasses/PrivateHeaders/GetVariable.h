@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "Function.h"
+#include "ParsedFunction.h"
 
 
 
@@ -7,7 +7,7 @@ namespace Optimization
 {
 	namespace FunctionClasses
 	{
-		class GetVariable : public Function
+		class GetVariable : public ParsedFunction
 		{
 			size_t _id;
 

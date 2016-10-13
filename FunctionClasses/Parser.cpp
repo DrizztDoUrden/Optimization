@@ -23,8 +23,8 @@ namespace Optimization
 		double Exp(double x) { return exp(x); };
 		double Neg(double x) { return -x; };
 
-		Function* ParseOperation(Lexer& lexer, vector<Token*> &stack);
-		Function* ParseOperandOrPower(Lexer& lexer, vector<Token*> &stack);
+		ParsedFunction* ParseOperation(Lexer& lexer, vector<Token*> &stack);
+		ParsedFunction* ParseOperandOrPower(Lexer& lexer, vector<Token*> &stack);
 
 		void CheckForUnexpectedEnd(Lexer& lexer)
 		{
@@ -62,7 +62,7 @@ namespace Optimization
 			return true;
 		}
 
-		Function* ParseOperand(Lexer& lexer, vector<Token*> &stack)
+		ParsedFunction* ParseOperand(Lexer& lexer, vector<Token*> &stack)
 		{
 			CheckForUnexpectedEnd(lexer);
 
@@ -143,7 +143,7 @@ namespace Optimization
 			}
 		}
 
-		Function* ParseRightOperand(Lexer& lexer, vector<Token*> &stack, Function* left, int priority, BinaryOperator leftOp, string leftOpStr)
+		ParsedFunction* ParseRightOperand(Lexer& lexer, vector<Token*> &stack, ParsedFunction* left, int priority, BinaryOperator leftOp, string leftOpStr)
 		{
 			CheckForUnexpectedEnd(lexer);
 
@@ -179,7 +179,7 @@ namespace Optimization
 			return new BinaryOperation(left, rOp, leftOp, leftOpStr);
 		}
 
-		Function* ParseOperandOrPower(Lexer& lexer, vector<Token*> &stack)
+		ParsedFunction* ParseOperandOrPower(Lexer& lexer, vector<Token*> &stack)
 		{
 			auto op = ParseOperand(lexer, stack);
 			auto oper = Peek(lexer, stack);
@@ -191,7 +191,7 @@ namespace Optimization
 			return ParseRightOperand(lexer, stack, op, 30, Pow, "^");
 		}
 
-		Function* ParseOperation(Lexer& lexer, vector<Token*> &stack)
+		ParsedFunction* ParseOperation(Lexer& lexer, vector<Token*> &stack)
 		{
 			auto left = ParseOperand(lexer, stack);
 
@@ -234,7 +234,7 @@ namespace Optimization
 		{
 		}
 
-		Function* Parser::Parse() const
+		ParsedFunction* Parser::Parse() const
 		{
 			vector<Token*> stack;
 			Lexer lexer(_input);

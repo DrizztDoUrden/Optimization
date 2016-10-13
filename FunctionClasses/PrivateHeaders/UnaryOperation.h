@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include <functional>
-#include "Function.h"
+#include "ParsedFunction.h"
 
 
 
@@ -10,14 +10,14 @@ namespace Optimization
 	{
 		using UnaryOperator = function<double(double)>;
 
-		class UnaryOperation : public Function
+		class UnaryOperation : public ParsedFunction
 		{
-			Function *_left;
+			ParsedFunction *_left;
 			UnaryOperator _operation;
 			string _opStr;
 
 		public:
-			UnaryOperation(Function *left, UnaryOperator op, string opStr);
+			UnaryOperation(ParsedFunction *left, UnaryOperator op, string opStr);
 			~UnaryOperation();
 
 			double Calculate(const double* x) const override sealed;

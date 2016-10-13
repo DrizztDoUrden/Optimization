@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "Function.h"
+#include "ParsedFunction.h"
 
 
 
@@ -7,7 +7,7 @@ namespace Optimization
 {
 	namespace FunctionClasses
 	{
-		class Constant : public Function
+		class Constant : public ParsedFunction
 		{
 			double _value;
 

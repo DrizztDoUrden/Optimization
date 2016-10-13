@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include <vector>
-#include "Function.h"
+#include "ParsedFunction.h"
 
 
 
@@ -19,7 +19,7 @@ namespace Optimization
 		public:
 			explicit Parser(string input);
 
-			Function* Parse() const;
+			ParsedFunction* Parse() const;
 		};
 	}
 }

@@ -9,13 +9,13 @@ void ValidateResult(LinearFunction function, double result, double test, double 
 
 void ValidateResult(NonlinearFunction function, const double result[], const double test[], double eps, size_t size);
 
-double Derivate(LinearFunction function, double eps, double point);
+double Derivate(LinearFunction function, double h, double point);
 
-LinearFunction DerivateFunction(LinearFunction function, double eps);
+LinearFunction DerivateFunction(LinearFunction function, double h);
 
-double PartialDerivate(NonlinearFunction function, double eps, const double point[], size_t coordinate, size_t size);
+double PartialDerivate(NonlinearFunction function, double h, const double point[], size_t coordinate, size_t size);
 
-function<double(const double [], size_t)> PartialDerivateFunction(NonlinearFunction function, double eps, size_t size);
+function<double(const double [], size_t)> PartialDerivateFunction(NonlinearFunction function, double h, size_t size);
 
 vector<double> Gradient(NonlinearFunction function, double eps, const double point[], size_t size);
 
