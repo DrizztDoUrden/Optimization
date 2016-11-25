@@ -1,5 +1,8 @@
 #pragma once
 #include <vector>
+#include <iosfwd>
+
+
 
 using namespace std;
 
@@ -42,6 +45,7 @@ namespace Optimization
 			void Normalize();
 
 			string ToString() const;
+			string ToString(streamsize precision) const;
 		};
 	}
 }

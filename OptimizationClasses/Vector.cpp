@@ -128,6 +128,28 @@ namespace Optimization
 		{
 			stringstream ss;
 
+			ss << fixed;
+			ss << "(";
+
+			for (size_t i = 0; i < _coordinates.size(); i++)
+			{
+				if (i > 0)
+					ss << ";";
+
+				ss << _coordinates[i];
+			}
+
+			ss << ")";
+
+			return ss.str();
+		}
+
+		string Vector::ToString(streamsize precision) const
+		{
+			stringstream ss;
+
+			ss.precision(precision);
+			ss << fixed;
 			ss << "(";
 
 			for (size_t i = 0; i < _coordinates.size(); i++)

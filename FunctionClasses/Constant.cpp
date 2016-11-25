@@ -23,7 +23,7 @@ namespace Optimization
 		string Constant::ToString() const
 		{
 			stringstream ss;
-			
+
 			ss << _value;
 
 			return ss.str();
